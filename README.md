@@ -1,3 +1,3 @@
 # 3050_Projektarbeit
 
-# Fokusfrage: Beeinflusst das Wetter die Passantenzahl
+# Fokusfrage: Das Wetter Beeinflusst die Passantenzahl
