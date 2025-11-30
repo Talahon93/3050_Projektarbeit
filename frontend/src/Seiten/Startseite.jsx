@@ -3,21 +3,17 @@ import "../Styles/startseite.css";
 export default function Startseite() {
   return (
     <div className="startseite">
-      <h1>Projektarbeit – Passanten & Wetter</h1>
-
+      <h1>3050 WebDev und interaktive DatenvisualisierungProjektarbeit</h1>
+      <h2>Das Wetter und die Auswirkung auf Passanten</h2>
       <p>
-        Dieses Projekt untersucht, wie das <b>Wetter</b> die Menge an
-        <b> Passanten</b> an verschiedenen Standorten beeinflusst.
+        Dieses Projekt untersucht, wie das Wetter die Anzahl Passanten an
+        verschiedenen Standorten in der Stadt Zürich beeinflusst.
       </p>
-
-      <h2>Fragestellung</h2>
+      <h2>Fokusfrage:</h2>
       <p>
-        <b>
-          „Wie beeinflusst das Wetter die Anzahl Passanten an verschiedenen
-          Standorten in Zürich?”
-        </b>
+        „Wie beeinflusst das Wetter die Anzahl Passanten an verschiedenen
+        Standorten in Zürich?”
       </p>
-
       <h2>Was findest du wo?</h2>
 
       <ul>
@@ -25,13 +21,13 @@ export default function Startseite() {
           <b>Analyse:</b> Visualisiert den Zusammenhang zwischen Wetterdaten und
           Passantenzahlen. Filterbar nach Standort, Wetter und Zeitraum.
         </li>
+
         <li>
           <b>Explore:</b> Freie Exploration aller verfügbaren Daten. Eignet sich
           zum Vergleichen und Entdecken eigener Muster.
         </li>
       </ul>
-
-      <p>Nutze oben die Navigation, um eine Ansicht zu wählen.</p>
+      <p>Nutze die Navigation oben um eine Ansicht zu wählen.</p>
     </div>
   );
 }

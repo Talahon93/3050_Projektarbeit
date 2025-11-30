@@ -4,7 +4,6 @@ export default function Header({ currentPage, setCurrentPage }) {
   return (
     <header className="header">
       <div className="logo">Passanten & Wetter</div>
-
       <nav className="nav">
         <button
           className={currentPage === "start" ? "active" : ""}
