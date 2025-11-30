@@ -1,0 +1,8 @@
+.Analyse-container {
+  display: flex;
+}
+
+.chart-area {
+  flex: 1;
+  padding: 20px;
+}

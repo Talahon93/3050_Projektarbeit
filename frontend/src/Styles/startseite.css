@@ -1,0 +1,18 @@
+.startseite {
+  padding: 40px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.startseite h1 {
+  margin-bottom: 10px;
+}
+
+.startseite h2 {
+  margin-top: 30px;
+}
+
+.startseite ul {
+  margin-top: 10px;
+  line-height: 1.6;
+}

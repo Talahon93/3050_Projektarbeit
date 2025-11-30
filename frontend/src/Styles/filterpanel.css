@@ -1,0 +1,32 @@
+.filter-panel {
+  width: 250px;
+  padding: 20px;
+  background: #f3f3f3;
+  border-right: 1px solid #ddd;
+}
+
+.filter-panel h3 {
+  margin-top: 0;
+}
+
+.filter-panel label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.filter-panel select {
+  width: 100%;
+  padding: 6px;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+.filter-panel button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  background: #61dafb;
+  border: none;
+  border-radius: 5px;
+}
