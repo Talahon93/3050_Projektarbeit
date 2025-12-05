@@ -1,8 +1,12 @@
-.Analyse-container {
+.analyse-container {
   display: flex;
+  flex-direction: column; /* Filter oben, Chart unten */
+  width: 100%;
 }
 
 .chart-area {
   flex: 1;
   padding: 20px;
+  display: flex;
+  justify-content: center; /* Inhalt (Chart) mittig */
 }

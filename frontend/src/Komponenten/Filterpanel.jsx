@@ -3,11 +3,11 @@ import "../Styles/filterpanel.css";
 
 export default function Filterpanel({ onFilterChange }) {
   const [standort, setStandort] = useState("Bahnhofstrasse Nord");
-  const [wetter, setWetter] = useState("klar");
-  const [datum, setDatum] = useState("");
+  const [startDatum, setStartDatum] = useState("");
+  const [endDatum, setEndDatum] = useState("");
 
   const anwenden = () => {
-    onFilterChange({ standort, wetter, datum });
+    onFilterChange({ standort, startDatum, endDatum });
   };
 
   return (
@@ -22,19 +22,18 @@ export default function Filterpanel({ onFilterChange }) {
         <option>Lintheschergasse</option>
       </select>
 
-      <label>Wetter:</label>
-      <select value={wetter} onChange={(e) => setWetter(e.target.value)}>
-        <option value="klar">Klar</option>
-        <option value="bewoelkt">Bewölkt</option>
-        <option value="regen">Regen</option>
-        <option value="nebel">Nebel</option>
-      </select>
-
-      <label>Datum:</label>
+      <label>Datum von:</label>
       <input
         type="date"
-        value={datum}
-        onChange={(e) => setDatum(e.target.value)}
+        value={startDatum}
+        onChange={(e) => setStartDatum(e.target.value)}
+      />
+
+      <label>Datum bis:</label>
+      <input
+        type="date"
+        value={endDatum}
+        onChange={(e) => setEndDatum(e.target.value)}
       />
 
       <button onClick={anwenden}>Anwenden</button>
