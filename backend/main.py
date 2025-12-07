@@ -9,27 +9,30 @@ from fastapi.middleware.cors import CORSMiddleware
 # ---------------------------------------------------------
 
 BASE_DIR = Path(__file__).parent
-DATA_PATH = BASE_DIR / "Teildatensatz.json"
+DATA_PATH = BASE_DIR / "Gesamtdatensatz.csv"
 
-# Datensatz einlesen
-df = pd.read_json(DATA_PATH)
+# CSV einlesen (nicht read_json!)
+df = pd.read_csv(DATA_PATH)
 
-# Datum + Uhrzeit als eigener String
-df["datetime"] = pd.to_datetime(df["timestamp"]).dt.strftime("%Y-%m-%d %H:%M:%S")
+# timestamp in echtes Datetime-Objekt umwandeln (Zeitzone wird automatisch entfernt)
+df["timestamp"] = pd.to_datetime(df["timestamp"])
 
 # ---------------------------------------------------------
 # FastAPI App
 # ---------------------------------------------------------
 
 app = FastAPI(
-    title="Passanten & Wetter API (simple sum)",
-    description="Datum+Uhrzeit, Wetterkondition, summierte Passantenzahl"
+    title="Passanten & Wetter API (RAW + Filter)",
+    description="Rohdaten je Zeit & Eingang mit optionalem Zeitfilter",
 )
 
-# CORS für dein Frontend
+# CORS erlauben für dein Frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,44 +40,62 @@ app.add_middleware(
 
 
 # ---------------------------------------------------------
-# Test Endpoint
+# Test-Endpoint
 # ---------------------------------------------------------
 
 @app.get("/")
 def root():
     return {
         "message": "Backend läuft",
-        "frage": "Beeinflusst das Wetter die Passantenzahl?"
+        "info": "Benutze /daten mit ?start=YYYY-MM-DD&end=YYYY-MM-DD",
     }
 
 
 # ---------------------------------------------------------
-# Haupt-Endpoint (SUMME pro timestamp + Wetter)
+# Haupt-Endpoint: ROHDATEN mit Zeitfilter
 # ---------------------------------------------------------
 
 @app.get("/daten")
-def daten():
+def daten(start=None, end=None):
     """
-    Summierte Passantenzahl pro Datum+Uhrzeit über alle Eingänge,
-    gruppiert nach Wetterkondition.
-    Jede Zeit kommt nur einmal vor.
+    Gibt jeden Messpunkt gefiltert zurück.
+
+    Felder:
+    - timestamp (YYYY-MM-DD HH:MM:SS, ohne Zeitzone)
+    - location_name (Eingang / Bereich)
+    - weather_condition
+    - pedestrians_count
+
+    Optionale Filter:
+    ?start=2023-01-10
+    ?end=2023-01-15
+    oder kombiniert:
+    ?start=2023-01-10&end=2023-01-15
     """
 
-    # Gruppieren nach datetime + Wetter und SUMME bilden
-    grouped = (
-        df.groupby(["datetime", "weather_condition"])["pedestrians_count"]
-        .sum()                                # <<<<< WICHTIG: Summe statt Durchschnitt
-        .reset_index()
-        .sort_values("datetime")
-    )
+    data = df.copy()
+
+    # Start-Datum Filter
+    if start is not None:
+        start_dt = pd.to_datetime(start)
+        data = data[data["timestamp"] >= start_dt]
+
+    # End-Datum Filter
+    if end is not None:
+        end_dt = pd.to_datetime(end)
+        data = data[data["timestamp"] <= end_dt]
 
     # JSON erstellen
     ergebnis = []
-    for _, row in grouped.iterrows():
-        ergebnis.append({
-            "datetime": row["datetime"],
-            "weather_condition": row["weather_condition"],
-            "sum_pedestrians": int(row["pedestrians_count"])    # <<<<< Summe als int
-        })
+    for _, row in data.iterrows():
+        ergebnis.append(
+            {
+                # als String ohne Zeitzone zurückgeben
+                "timestamp": row["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
+                "location_name": row["location_name"],
+                "weather_condition": row["weather_condition"],
+                "pedestrians_count": int(row["pedestrians_count"]),
+            }
+        )
 
     return {"results": ergebnis}
