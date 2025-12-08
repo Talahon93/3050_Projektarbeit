@@ -44,7 +44,9 @@ export default function Wetter({ filter }) {
     if (apiEnd) params.push(`end=${apiEnd}`);
 
     const backendLocationName = locationMap[standort] || standort || null;
-    if (backendLocationName) {
+
+    // 🔴 WICHTIG: bei "alle" KEIN location_name-Filter setzen
+    if (backendLocationName && backendLocationName.toLowerCase() !== "alle") {
       params.push(`location_name=${encodeURIComponent(backendLocationName)}`);
     }
 
@@ -112,12 +114,15 @@ export default function Wetter({ filter }) {
     },
   };
 
+  const standortText =
+    standort && standort.toLowerCase() !== "alle" ? standort : "Alle Standorte";
+
   return (
     <div style={{ padding: "20px" }}>
       <h2>Analyse: Passanten & Wetter</h2>
 
       <p>
-        <b>Standort:</b> {standort || "Alle"} <br />
+        <b>Standort:</b> {standortText} <br />
         <b>Zeitraum:</b>{" "}
         {startDatum && endDatum
           ? `${startDatum} bis ${endDatum}`

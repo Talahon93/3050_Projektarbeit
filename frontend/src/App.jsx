@@ -14,8 +14,8 @@ export default function App() {
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
 
       {currentPage === "start" && <Startseite />}
-      {currentPage === "fokusfrage" && <Fokusfrage />}
-      {currentPage === "exploration" && <Exploration />}
+      {currentPage === "Fokusfrage" && <Fokusfrage />}
+      {currentPage === "Exploration" && <Exploration />}
 
       <Footer />
     </div>
