@@ -11,11 +11,18 @@ from fastapi.middleware.cors import CORSMiddleware
 BASE_DIR = Path(__file__).parent
 DATA_PATH = BASE_DIR / "Gesamtdatensatz.csv"
 
-# CSV einlesen (nicht read_json!)
 df = pd.read_csv(DATA_PATH)
 
-# timestamp in echtes Datetime-Objekt umwandeln (Zeitzone wird automatisch entfernt)
-df["timestamp"] = pd.to_datetime(df["timestamp"])
+# timestamp in Datetime umwandeln und Zeitzone entfernen
+ts = pd.to_datetime(df["timestamp"])
+try:
+    # falls Werte tz-aware sind (z.B. +00:00), Zeitzone entfernen
+    ts = ts.dt.tz_convert(None)
+except TypeError:
+    # falls schon tz-naiv, einfach so lassen
+    pass
+
+df["timestamp"] = ts
 
 # ---------------------------------------------------------
 # FastAPI App
@@ -26,7 +33,6 @@ app = FastAPI(
     description="Rohdaten je Zeit & Eingang mit optionalem Zeitfilter",
 )
 
-# CORS erlauben für dein Frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -38,7 +44,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # ---------------------------------------------------------
 # Test-Endpoint
 # ---------------------------------------------------------
@@ -47,50 +52,29 @@ app.add_middleware(
 def root():
     return {
         "message": "Backend läuft",
-        "info": "Benutze /daten mit ?start=YYYY-MM-DD&end=YYYY-MM-DD",
+        "info": "Benutze /daten oder /wetter-uebersicht mit ?start=YYYY-MM-DD&end=YYYY-MM-DD",
     }
 
-
 # ---------------------------------------------------------
-# Haupt-Endpoint: ROHDATEN mit Zeitfilter
+# Rohdaten mit Zeitfilter (falls du sie noch brauchst)
 # ---------------------------------------------------------
 
 @app.get("/daten")
 def daten(start=None, end=None):
-    """
-    Gibt jeden Messpunkt gefiltert zurück.
-
-    Felder:
-    - timestamp (YYYY-MM-DD HH:MM:SS, ohne Zeitzone)
-    - location_name (Eingang / Bereich)
-    - weather_condition
-    - pedestrians_count
-
-    Optionale Filter:
-    ?start=2023-01-10
-    ?end=2023-01-15
-    oder kombiniert:
-    ?start=2023-01-10&end=2023-01-15
-    """
-
     data = df.copy()
 
-    # Start-Datum Filter
     if start is not None:
         start_dt = pd.to_datetime(start)
         data = data[data["timestamp"] >= start_dt]
 
-    # End-Datum Filter
     if end is not None:
         end_dt = pd.to_datetime(end)
         data = data[data["timestamp"] <= end_dt]
 
-    # JSON erstellen
     ergebnis = []
     for _, row in data.iterrows():
         ergebnis.append(
             {
-                # als String ohne Zeitzone zurückgeben
                 "timestamp": row["timestamp"].strftime("%Y-%m-%d %H:%M:%S"),
                 "location_name": row["location_name"],
                 "weather_condition": row["weather_condition"],
@@ -99,3 +83,52 @@ def daten(start=None, end=None):
         )
 
     return {"results": ergebnis}
+
+# ---------------------------------------------------------
+# Aggregation: Wetterübersicht
+# ---------------------------------------------------------
+
+@app.get("/wetter-uebersicht")
+def wetter_uebersicht(start=None, end=None, location_name=None):
+    """
+    Aggregiert die Daten nach Wetterkondition.
+    Optional filterbar nach:
+      - start (YYYY-MM-DD)
+      - end (YYYY-MM-DD)
+      - location_name (genauer Name des Eingangs)
+    """
+
+    data = df.copy()
+
+    if start is not None:
+        start_dt = pd.to_datetime(start)
+        data = data[data["timestamp"] >= start_dt]
+
+    if end is not None:
+        end_dt = pd.to_datetime(end)
+        data = data[data["timestamp"] <= end_dt]
+
+    if location_name is not None:
+        data = data[data["location_name"] == location_name]
+
+    if data.empty:
+        return {"results": []}
+
+    grouped = (
+        data.groupby("weather_condition")["pedestrians_count"]
+        .mean()
+        .reset_index()
+    )
+
+    grouped["pedestrians_count"] = grouped["pedestrians_count"].round(2)
+
+    results = []
+    for _, row in grouped.iterrows():
+        results.append(
+            {
+                "weather_condition": row["weather_condition"],
+                "mean_pedestrians": float(row["pedestrians_count"]),
+            }
+        )
+
+    return {"results": results}

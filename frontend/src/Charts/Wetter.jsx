@@ -30,13 +30,11 @@ const locationMap = {
 
 export default function Wetter({ filter }) {
   const { standort, startDatum, endDatum } = filter;
-  const [rawData, setRawData] = useState([]);
 
-  // -----------------------------
-  // Daten vom Backend holen
-  // -----------------------------
+  const [data, setData] = useState([]);
+
   useEffect(() => {
-    let url = "http://localhost:8000/daten";
+    let url = "http://localhost:8000/wetter-uebersicht";
 
     const params = [];
     const apiStart = toApiDate(startDatum);
@@ -44,6 +42,11 @@ export default function Wetter({ filter }) {
 
     if (apiStart) params.push(`start=${apiStart}`);
     if (apiEnd) params.push(`end=${apiEnd}`);
+
+    const backendLocationName = locationMap[standort] || standort || null;
+    if (backendLocationName) {
+      params.push(`location_name=${encodeURIComponent(backendLocationName)}`);
+    }
 
     if (params.length > 0) {
       url += "?" + params.join("&");
@@ -54,62 +57,34 @@ export default function Wetter({ filter }) {
     fetch(url)
       .then((res) => res.json())
       .then((json) => {
-        console.log("API Antwort:", json);
-        setRawData(json.results || []);
+        const results = json.results || [];
+
+        // Wetter-Mapping (EN -> DE)
+        const weatherMap = {
+          "clear-day": "Sonnig",
+          "clear-night": "Klar (Nacht)",
+          "partly-cloudy-day": "Leicht bewölkt",
+          "partly-cloudy-night": "Leicht bewölkt (Nacht)",
+          cloudy: "Bewölkt",
+          rain: "Regen",
+          wind: "Windig",
+          fog: "Nebel",
+          snow: "Schnee",
+          sleet: "Schneeregen",
+        };
+
+        const preparedData = results.map((entry) => ({
+          wetter:
+            weatherMap[entry.weather_condition] || entry.weather_condition,
+          passanten: entry.mean_pedestrians,
+        }));
+
+        console.log("Daten für VegaLite:", preparedData);
+        setData(preparedData);
       })
       .catch((err) => console.error("Fehler beim Laden:", err));
-  }, [startDatum, endDatum]);
+  }, [standort, startDatum, endDatum]);
 
-  // -----------------------------
-  // Wetter-Mapping (EN -> DE)
-  // -----------------------------
-  const weatherMap = {
-    "clear-day": "Sonnig",
-    "clear-night": "Klar (Nacht)",
-    "partly-cloudy-day": "Leicht bewölkt",
-    "partly-cloudy-night": "Leicht bewölkt (Nacht)",
-    cloudy: "Bewölkt",
-    rain: "Regen",
-    wind: "Windig",
-    fog: "Nebel",
-    snow: "Schnee",
-    sleet: "Schneeregen",
-  };
-
-  // -----------------------------
-  // 1) Standort-Filter anwenden
-  // 2) Nach Wetter aggregieren (Ø Passanten)
-  // -----------------------------
-
-  const backendLocationName = locationMap[standort] || standort || null;
-
-  const gefiltertNachStandort = rawData.filter((d) => {
-    if (!backendLocationName) return true; // "Alle"
-    return d.location_name === backendLocationName;
-  });
-
-  // Aggregation pro Wetterzustand
-  const aggregiert = {};
-  gefiltertNachStandort.forEach((d) => {
-    const key = d.weather_condition || "unbekannt";
-    if (!aggregiert[key]) {
-      aggregiert[key] = { weather_condition: key, sum: 0, count: 0 };
-    }
-    aggregiert[key].sum += d.pedestrians_count;
-    aggregiert[key].count += 1;
-  });
-
-  const data = Object.values(aggregiert).map((entry) => ({
-    wetter: weatherMap[entry.weather_condition] || entry.weather_condition,
-    passanten:
-      entry.count > 0 ? Math.round((entry.sum / entry.count) * 100) / 100 : 0,
-  }));
-
-  console.log("Daten für VegaLite:", data);
-
-  // -----------------------------
-  // Vega-Lite Spec (Bar-Chart)
-  // -----------------------------
   const spec = {
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: 700,
