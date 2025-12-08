@@ -3,11 +3,13 @@ import Filterpanel from "../Komponenten/Filterpanel";
 import WetterChart from "../Charts/Wetter";
 import "../Styles/analyse.css";
 
-export default function Analyse() {
+export default function Exploration() {
   const [filter, setFilter] = useState({
     standort: "Bahnhofstrasse Nord",
     wetter: "klar",
     zeitraum: "tag",
+    startDatum: null,
+    endDatum: null,
   });
 
   return (

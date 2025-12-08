@@ -13,17 +13,17 @@ export default function Header({ currentPage, setCurrentPage }) {
         </button>
 
         <button
-          className={currentPage === "analyse" ? "active" : ""}
-          onClick={() => setCurrentPage("analyse")}
+          className={currentPage === "Fokusfrage" ? "active" : ""}
+          onClick={() => setCurrentPage("fokusfrage")}
         >
-          Analyse
+          Fokusfrage
         </button>
 
         <button
-          className={currentPage === "explore" ? "active" : ""}
-          onClick={() => setCurrentPage("explore")}
+          className={currentPage === "Exploration" ? "active" : ""}
+          onClick={() => setCurrentPage("exploration")}
         >
-          Explore
+          Exploration
         </button>
       </nav>
     </header>

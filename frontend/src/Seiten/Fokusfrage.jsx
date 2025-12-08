@@ -1,6 +1,6 @@
 import "../styles/Explore.css";
 
-export default function Explore() {
+export default function Fokusfrage() {
   return (
     <div className="explore-page">
       <h2>Explore</h2>

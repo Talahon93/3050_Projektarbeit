@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Header from "./Komponenten/Header";
 import Startseite from "./Seiten/Startseite";
-import Analyse from "./Seiten/Analyse";
-import Explore from "./Seiten/Explore";
+import Fokusfrage from "./Seiten/Fokusfrage";
+import Exploration from "./Seiten/Exploration";
 import Footer from "./Komponenten/Footer";
 import "./Styles/global.css";
 
@@ -14,8 +14,8 @@ export default function App() {
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />
 
       {currentPage === "start" && <Startseite />}
-      {currentPage === "analyse" && <Analyse />}
-      {currentPage === "explore" && <Explore />}
+      {currentPage === "fokusfrage" && <Fokusfrage />}
+      {currentPage === "exploration" && <Exploration />}
 
       <Footer />
     </div>
