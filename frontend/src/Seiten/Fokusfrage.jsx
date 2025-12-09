@@ -8,8 +8,8 @@ export default function Fokusfrage() {
     standort: "alle", // oder z.B. "Bahnhofstrasse Nord" falls nur ein Ort
     wetter: "alle", // im Chart nach Wetter gruppieren/anzeigen
     zeitraum: "sommer", // kannst du im Chart intern benutzen, wenn nötig
-    startDatum: "2024-06-01",
-    endDatum: "2024-08-31",
+    startDatum: "2024-01-01",
+    endDatum: "2024-12-31",
   };
 
   return (
