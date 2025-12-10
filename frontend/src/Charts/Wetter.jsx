@@ -45,7 +45,7 @@ export default function Wetter({ filter }) {
 
     const backendLocationName = locationMap[standort] || standort || null;
 
-    //  WICHTIG: bei "alle" KEIN location_name-Filter setzen
+    // 🔴 WICHTIG: bei "alle" KEIN location_name-Filter setzen
     if (backendLocationName && backendLocationName.toLowerCase() !== "alle") {
       params.push(`location_name=${encodeURIComponent(backendLocationName)}`);
     }
@@ -92,36 +92,22 @@ export default function Wetter({ filter }) {
     width: 700,
     height: 350,
     data: { values: data },
-
-    mark: "bar",
-
+    mark: { type: "bar", cornerRadiusEnd: 4, color: "#3F7FFF" },
     encoding: {
-      x: {
-        field: "standort",
-        type: "nominal",
-        title: "Standort",
-        axis: { labelAngle: 0 },
-      },
-
       y: {
-        aggregate: "sum",
-        field: "passanten",
-        type: "quantitative",
-        title: "Total Passanten",
-      },
-
-      color: {
         field: "wetter",
         type: "nominal",
-        title: "Wettertyp",
-        scale: {
-          domain: ["Sonnig", "Bewölkt", "Leicht bewölkt", "Regen", "Schnee"],
-          range: ["#e7ba52", "#c7c7c7", "#aec7e8", "#1f77b4", "#9467bd"],
-        },
+        title: "Wetter",
+        sort: "-x",
+        axis: { labelFontSize: 13, titleFontSize: 14 },
       },
-
+      x: {
+        field: "passanten",
+        type: "quantitative",
+        title: "Ø Passanten",
+        axis: { labelFontSize: 13, titleFontSize: 14 },
+      },
       tooltip: [
-        { field: "standort", title: "Standort" },
         { field: "wetter", title: "Wetter" },
         { field: "passanten", title: "Ø Passanten" },
       ],
