@@ -1,12 +1,8 @@
-.analyse-container {
-  display: flex;
-  flex-direction: column; /* Filter oben, Chart unten */
-  width: 100%;
+.text-block {
+  max-width: 900px;
+  margin: 0 auto 30px auto;
 }
-
 .chart-area {
-  flex: 1;
-  padding: 20px;
   display: flex;
-  justify-content: center; /* Inhalt (Chart) mittig */
+  justify-content: center;
 }

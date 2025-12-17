@@ -2,14 +2,13 @@
 import WetterChart from "../Charts/Wetter";
 import "../Styles/analyse.css";
 
+// Die Fokusfrage zeigt Wetter/Passanten im Jahr 2024
 export default function Fokusfrage() {
-  // Fix definierter Zeitraum: Sommer (Beispiel: Juni–August 2024)
-  const sommerFilter = {
-    standort: "alle", // oder z.B. "Bahnhofstrasse Nord" falls nur ein Ort
-    wetter: "alle", // im Chart nach Wetter gruppieren/anzeigen
-    zeitraum: "sommer", // kannst du im Chart intern benutzen, wenn nötig
-    startDatum: "2024-01-01",
-    endDatum: "2024-12-31",
+  const fokusfrage = {
+    standort: "alle",
+    wetter: "alle",
+    startDatum: "01.01.2024",
+    endDatum: "31.12.2024",
   };
 
   return (
@@ -18,16 +17,24 @@ export default function Fokusfrage() {
         <h2>Fokusfrage</h2>
         <p>
           Wie verändert sich die Passantenzahl an der Bahnhofsstrasse in
-          Abhängigkeit vom Wetter im Zeitraum Juni–August 2024?
+          Abhängigkeit vom Wetter im Jahr 2024?
         </p>
         <p>
           Die Visualisierung unten zeigt die durchschnittliche Anzahl Passanten
-          pro Stunde für die verschiedenen Wetterlagen im Sommer.
+          pro Messintervall (pro Stunde) für die verschiedenen Wetterlagen im
+          Jahr 2024.
         </p>
       </div>
 
       <div className="chart-area">
-        <WetterChart filter={sommerFilter} />
+        <WetterChart filter={fokusfrage} />
+      </div>
+      <div className="text-block">
+        <p>
+          Die Auswertung zeigt, dass bei ungünstigen Wetterlagen deutlich
+          weniger Passanten unterwegs sind als bei gutem Wetter. Spannend ist
+          auch, dass bei nebligem Wetter am wenigsten Passanten unterwegs sind.
+        </p>
       </div>
     </div>
   );

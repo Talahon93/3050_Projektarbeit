@@ -1,3 +1,4 @@
-.explore-page {
-  padding: 20px;
+.chart-area {
+  display: flex;
+  justify-content: center;
 }

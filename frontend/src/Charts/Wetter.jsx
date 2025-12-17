@@ -34,6 +34,11 @@ export default function Wetter({ filter }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    if (!standort) {
+      //Am Anfang wird auf der Explorationsseite kein Chart gezeigt
+      return;
+    }
+
     let url = "http://localhost:8000/wetter-uebersicht";
 
     const params = [];
@@ -45,7 +50,6 @@ export default function Wetter({ filter }) {
 
     const backendLocationName = locationMap[standort] || standort || null;
 
-    // WICHTIG: bei "alle" KEIN location_name-Filter setzen
     if (backendLocationName && backendLocationName.toLowerCase() !== "alle") {
       params.push(`location_name=${encodeURIComponent(backendLocationName)}`);
     }
@@ -61,7 +65,7 @@ export default function Wetter({ filter }) {
       .then((json) => {
         const results = json.results || [];
 
-        // Wetter-Mapping (EN -> DE)
+        // Wetter-Namen Englisch zu Deutsch
         const weatherMap = {
           "clear-day": "Sonnig",
           "partly-cloudy-day": "Leicht bewölkt",
@@ -86,6 +90,7 @@ export default function Wetter({ filter }) {
   }, [standort, startDatum, endDatum]);
 
   const spec = {
+    //Chart machen
     $schema: "https://vega.github.io/schema/vega-lite/v5.json",
     width: 700,
     height: 350,

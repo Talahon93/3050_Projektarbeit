@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../Styles/filterpanel.css";
 
 export default function Filterpanel({ onFilterChange }) {
-  const [standort, setStandort] = useState("Bahnhofstrasse Nord");
+  const [standort, setStandort] = useState("");
   const [startDatum, setStartDatum] = useState("");
   const [endDatum, setEndDatum] = useState("");
 
@@ -16,6 +16,7 @@ export default function Filterpanel({ onFilterChange }) {
 
       <label>Standort:</label>
       <select value={standort} onChange={(e) => setStandort(e.target.value)}>
+        <option value="">-- Standort wählen --</option>
         <option>Bahnhofstrasse Nord</option>
         <option>Bahnhofstrasse Mitte</option>
         <option>Bahnhofstrasse Süd</option>

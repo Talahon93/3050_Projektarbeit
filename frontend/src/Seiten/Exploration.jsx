@@ -5,11 +5,9 @@ import "../Styles/analyse.css";
 
 export default function Exploration() {
   const [filter, setFilter] = useState({
-    standort: "Bahnhofstrasse Nord",
-    wetter: "klar",
-    zeitraum: "tag",
-    startDatum: null,
-    endDatum: null,
+    standort: "",
+    startDatum: "",
+    endDatum: "",
   });
 
   return (
