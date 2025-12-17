@@ -110,6 +110,9 @@ def wetter_uebersicht(start=None, end=None, location_name=None):
 
     if location_name is not None:
         data = data[data["location_name"] == location_name]
+    
+    #Nur Tagwetter ans Frontend schicken
+    data = data[~data["weather_condition"].str.contains("night", case=False, na=False)]
 
     if data.empty:
         return {"results": []}

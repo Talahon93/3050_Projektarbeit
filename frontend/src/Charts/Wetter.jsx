@@ -64,9 +64,7 @@ export default function Wetter({ filter }) {
         // Wetter-Mapping (EN -> DE)
         const weatherMap = {
           "clear-day": "Sonnig",
-          "clear-night": "Klar (Nacht)",
           "partly-cloudy-day": "Leicht bewölkt",
-          "partly-cloudy-night": "Leicht bewölkt (Nacht)",
           cloudy: "Bewölkt",
           rain: "Regen",
           wind: "Windig",
