@@ -45,7 +45,7 @@ export default function Wetter({ filter }) {
 
     const backendLocationName = locationMap[standort] || standort || null;
 
-    // 🔴 WICHTIG: bei "alle" KEIN location_name-Filter setzen
+    // WICHTIG: bei "alle" KEIN location_name-Filter setzen
     if (backendLocationName && backendLocationName.toLowerCase() !== "alle") {
       params.push(`location_name=${encodeURIComponent(backendLocationName)}`);
     }
