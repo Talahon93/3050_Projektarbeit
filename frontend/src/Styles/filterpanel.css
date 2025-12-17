@@ -1,5 +1,4 @@
 .filterpanel {
-  max-width: 1100px; /* Breite begrenzen */
-  margin: 20px auto; /* horizontal zentrieren */
-  padding: 10px 20px; /* Innenabstand */
+  display: flex;
+  justify-content: center;
 }
