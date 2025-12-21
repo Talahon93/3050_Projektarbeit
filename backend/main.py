@@ -1,12 +1,8 @@
 from pathlib import Path
-
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# ---------------------------------------------------------
-# Daten laden
-# ---------------------------------------------------------
 
 BASE_DIR = Path(__file__).parent
 DATA_PATH = BASE_DIR / "Gesamtdatensatz.csv"
@@ -16,23 +12,22 @@ df = pd.read_csv(DATA_PATH)
 # timestamp in Datetime umwandeln und Zeitzone entfernen
 ts = pd.to_datetime(df["timestamp"])
 try:
-    # falls Werte tz-aware sind (z.B. +00:00), Zeitzone entfernen
+    # falls Werte z.B. +00:00 -> Zeitzone entfernen
     ts = ts.dt.tz_convert(None)
 except TypeError:
-    # falls schon tz-naiv, einfach so lassen
     pass
 
 df["timestamp"] = ts
 
-# ---------------------------------------------------------
-# FastAPI App
-# ---------------------------------------------------------
 
+#FastAPI-App erstellen
 app = FastAPI(
     title="Passanten & Wetter API (RAW + Filter)",
     description="Rohdaten je Zeit & Eingang mit optionalem Zeitfilter",
 )
 
+
+#CORS Aktivieren -> Abfragen vom Frontend erlauben
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -44,10 +39,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------
-# Test-Endpoint
-# ---------------------------------------------------------
-
+#Root/Test-Endpunkt -> http://127.0.0.1:8000
 @app.get("/")
 def root():
     return {
@@ -55,14 +47,13 @@ def root():
         "info": "Benutze /daten oder /wetter-uebersicht mit ?start=YYYY-MM-DD&end=YYYY-MM-DD",
     }
 
-# ---------------------------------------------------------
-# Rohdaten mit Zeitfilter (falls du sie noch brauchst)
-# ---------------------------------------------------------
 
+#Endpunkt -> http://127.0.0.1:8000/daten
 @app.get("/daten")
 def daten(start=None, end=None):
     data = df.copy()
 
+    #Filter anwenden http://127.0.0.1:8000/daten?start=2024-01-01&end=2024-01-31
     if start is not None:
         start_dt = pd.to_datetime(start)
         data = data[data["timestamp"] >= start_dt]
@@ -84,10 +75,8 @@ def daten(start=None, end=None):
 
     return {"results": ergebnis}
 
-# ---------------------------------------------------------
-# Aggregation: Wetterübersicht
-# ---------------------------------------------------------
 
+#Wetterübersicht eingebaut -> http://localhost:8000/wetter-uebersicht
 @app.get("/wetter-uebersicht")
 def wetter_uebersicht(start=None, end=None, location_name=None):
     """
@@ -108,6 +97,7 @@ def wetter_uebersicht(start=None, end=None, location_name=None):
         end_dt = pd.to_datetime(end)
         data = data[data["timestamp"] <= end_dt]
 
+    #Nach Location filtern -> http://localhost:8000/wetter-uebersicht?location_name=Bahnhof
     if location_name is not None:
         data = data[data["location_name"] == location_name]
     
