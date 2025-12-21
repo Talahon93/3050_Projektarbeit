@@ -1,4 +1,3 @@
-// src/Seiten/Fokusfrage.jsx
 import WetterChart from "../Charts/Wetter";
 import "../Styles/analyse.css";
 

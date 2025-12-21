@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Filterpanel from "../Komponenten/Filterpanel";
 import WetterChart from "../Charts/Wetter";
-import "../Styles/analyse.css";
+import "../Styles/explore.css";
 
 export default function Exploration() {
   const [filter, setFilter] = useState({
@@ -12,7 +12,9 @@ export default function Exploration() {
 
   return (
     <div className="analyse-container">
-      <Filterpanel onFilterChange={setFilter} />
+      <div className="filter-wrapper">
+        <Filterpanel onFilterChange={setFilter} />
+      </div>
 
       <div className="chart-area">
         <WetterChart filter={filter} />

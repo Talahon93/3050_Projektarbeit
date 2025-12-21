@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "../Styles/filterpanel.css";
 
 export default function Filterpanel({ onFilterChange }) {
   const [standort, setStandort] = useState("");
