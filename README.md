@@ -1,6 +1,6 @@
 # 3050_Projektarbeit
 
-# Fokusfrage: Das Wetter Beeinflusst die Passantenzahl?
+# Fokusfrage: Das Wetter beeinflusst die Passantenzahl?
 
 ## Diese Web-App soll die Fokusfrage beantworten und die Daten des "Gesamtdatensatz.csv" visualisieren. Dieser Datensatz beinhaltet Daten zu den Fussgängern an vier verschiedenene Zugängen zum Hauptbahnhof in der Stadt Zürich.
 
